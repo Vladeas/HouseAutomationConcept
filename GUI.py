@@ -1,14 +1,8 @@
 import tkinter as tk
-from backbone import test1, test2
+import backbone as bk
 import tkinter.font as font
-from menuBarClassGUI import *
-
-#Fram for showing informations and data
-class DisplayFrameGUI():
-    def __init__(self, parent):
-        self.parent = tk.LabelFrame(parent)
-        self.parent.pack(fill = tk.BOTH)
-
+import menuBarClassGUI as mb
+import ShowcaseGUI as sc #Use bk.FUNCTION to call a function from background
 
 #Main Frame, Window of the App
 class MainAppGUI():
@@ -22,13 +16,16 @@ class MainAppGUI():
         self.btnFont = font.Font(size = 15)
 
         self.roomList = ["Vlad's room", "Living room", "Kitchen"]
+        self.btnList = []
 
-        self.menuBar = MenuBarGUI(self.parent)
-        self.menuBar.create_button("Home", self.btnFont, "test1", "undefined")
+        self.menuBar = mb.MenuBarGUI(self.parent)
+        self.menuBar.create_button("Home", self.btnFont, "displayImageHome", "undefined")
         self.menuBar.create_menu_button("Rooms", self.btnFont, self.roomList)
-        self.menuBar.create_button("Settings", self.btnFont, "test1", "bottom")
+        self.menuBar.create_button("Settings", self.btnFont, "displayImageHome", "bottom")
 
-        self.displayFrame = DisplayFrameGUI(self.parent)
+    def initializeDictionaries(self):
+        self.btnList.append({"name": "Home", "commandPath": "displayImageHome", "alignment": "undefined"})
+        self.btnList.append({"name": "Settings", "commandPath": "displayImageHome", "alignment": "bottomq"})
 
 
 #Get the resolution of the current device screen
