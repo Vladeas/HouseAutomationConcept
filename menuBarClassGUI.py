@@ -4,7 +4,7 @@ import ShowcaseGUI as sc #Use bk.FUNCTION to call a function from background
 
 #Menu Bar Frame Added to the Main Frame
 class MenuBarGUI():
-    def __init__(self, parent):
+    def __init__(self, parent, displayWindow):
         self.parent = tk.LabelFrame(parent)
         #self.parent.configure(bg = "white")
         self.configureFrame()
@@ -14,28 +14,27 @@ class MenuBarGUI():
         self.menuButtonList = [] # All created menus are part of this list
         self.menBtnCounter = 0 # count the elements in the menu list (Not sure if necessary yet)
 
-        self.homeWindow = sc.dataWindowGUI(parent, "resources\House_Icon.png")
-        self.vladWindow = sc.dataWindowGUI(parent, "resources\Bed_Icon.png")
-        self.livingWindow = sc.dataWindowGUI(parent, "resources\firePlace_Icon.png")
-        self.kitchenWindow = sc.dataWindowGUI(parent, "resources\oven_Icon.jpg")
+        self.displayWindow = displayWindow
 
     def configureFrame(self):
         self.parent["bg"] = "white"
 
+    
+
     #Create a button with the given data
-    def create_button(self, name, font, align):
+    def create_button(self, dataList, font):
         #Create the button and give its propeties
-        self.buttonList.append(tk.Button(self.parent, text = name, font = font))
+        self.buttonList.append(tk.Button(self.parent, text = dataList["name"], font = font))
         self.buttonList[self.btnCounter]["bd"] = 0 #border width
         self.buttonList[self.btnCounter]["bg"] = "white" #background color
         self.buttonList[self.btnCounter]["padx"] = 10 #padding on X axis (Horizontal)
         self.buttonList[self.btnCounter]["pady"] = 10 #padding on Y axis (Vertical)
-        self.buttonList[self.btnCounter]["command"] = lambda : self.displayDataWindow(name) #trigger a function
+        self.buttonList[self.btnCounter]["command"] = lambda : self.displayDataWindow(dataList["name"]) #trigger a function
         #Check if the function has an alignment option
-        if align == "undefined":
+        if "undefined" == dataList["alignment"]:
             self.buttonList[self.btnCounter].pack(fill = tk.X)
-        elif align == "bottom":
-            self.buttonList[self.btnCounter].pack(fill = tk.X, side = align)
+        elif "bottom" == dataList["alignment"]:
+            self.buttonList[self.btnCounter].pack(fill = tk.X, side = dataList["alignment"])
         #Increase the Counter in case there will be more menus
         self.btnCounter += 1
 
@@ -66,10 +65,10 @@ class MenuBarGUI():
 
     def displayDataWindow(self, name):
         if name == "Home":
-            self.homeWindow.displayImageHome()
+            self.homeWindow.displayImageHome("resources\House_Icon.png")
         elif name == "Vlad's room":
-            self.vladWindow.displayImageHome()
+            self.homeWindow.displayImageHome("resources\Bed_Icon.png")
         elif name == "Living room":
-            self.livingWindow.displayImageHome()
+            self.homeWindow.displayImageHome("resources\firePlace_Icon.png")
         elif name == "Kitchen":
-            self.kitchenWindow.displayImageHome()
+            self.homeWindow.displayImageHome("resources\oven_Icon.jpg")

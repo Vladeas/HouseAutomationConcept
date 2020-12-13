@@ -12,21 +12,38 @@ class MainAppGUI():
         self.parent.title(appTitle)
         self.parent.geometry(resolution)
         self.parent.configure(bg = "white")
-        
-        self.btnFont = font.Font(size = 15)
 
-        self.roomList = ["Vlad's room", "Living room", "Kitchen"]
         self.btnList = []
+        self.imageList = []
+        self.roomList = []
+        self.btnFont
 
+        self.initializeDictionaries()
+        self.initializeRoomList()
+        self.initializeFont()
+
+        self.displayWindow = sc.dataWindowGUI(self.parent)
         self.menuBar = mb.MenuBarGUI(self.parent)
-        self.menuBar.create_button("Home", self.btnFont, "displayImageHome", "undefined")
+
+        self.menuBar.create_button(self.btnList[0], self.btnFont)
         self.menuBar.create_menu_button("Rooms", self.btnFont, self.roomList)
-        self.menuBar.create_button("Settings", self.btnFont, "displayImageHome", "bottom")
+        self.menuBar.create_button(self.btnList[1], self.btnFont)
 
     def initializeDictionaries(self):
         self.btnList.append({"name": "Home", "commandPath": "displayImageHome", "alignment": "undefined"})
-        self.btnList.append({"name": "Settings", "commandPath": "displayImageHome", "alignment": "bottomq"})
+        self.btnList.append({"name": "Settings", "commandPath": "displayImageHome", "alignment": "bottom"})
 
+    def initializeRoomList(self):
+        self.roomList = ["Vlad's room", "Living room", "Kitchen"]
+
+    def initializeImageList(self):
+        self.imageList.append("resources\House_Icon.png")
+        self.imageList.append("resources\Bed_Icon.png")
+        self.imageList.append("resources\firePlace_Icon.png")
+        self.imageList.append("resources\oven_Icon.jpg")
+
+    def initializeFont(self):
+        self.btnFont = font.Font(size = 15)
 
 #Get the resolution of the current device screen
 #Return it in a format to be used witk tkinter
