@@ -69,7 +69,7 @@ class serialPlot:
 def start_DataColection():
     portName = 'COM5'     # for windows users
     #portName = '/dev/ttyUSB0'
-    baudRate = 38400
+    baudRate = 9600
     maxPlotLength = 100
     dataNumBytes = 4        # number of bytes of 1 data point
     s = serialPlot(portName, baudRate, maxPlotLength, dataNumBytes)   # initializes all required variables

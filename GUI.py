@@ -63,4 +63,8 @@ def start_GUI():
 
     app = MainAppGUI(root, resolution, appTitle)
 
+    serailRead_Home = bk.serialRead(9600, "COM5")
+
     root.mainloop()
+
+    serailRead_Home.close()

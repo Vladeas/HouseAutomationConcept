@@ -34,16 +34,15 @@ void loop() {
   // put your main code here, to run repeatedly:
   //Temperature code segment DHT22
   temperatureSensor();
-
   //Air quality code segment MQ135
   airQualitySensor();
-
   //Ambiental Light Sensor code segment temt 6000
   ambientalLightSensor();
-
   //Method for printing the results
-  printResults();
-
+  //printResults();
+  //Method for comunicating with the pc
+  writeResults();
+  //Delay before the next loop
   delay(timeDelay);
 }
 
@@ -81,5 +80,13 @@ void printResults()
   Serial.print("Ambiental Ligth : ");
   Serial.print(ambientalLightReading);
   Serial.print(" , Percentage : ");
-  Serial.println(luminosityRatio);
+  Serial.print(luminosityRatio);
+  Serial.println(" % ");
+  Serial.println("==========");
+}
+
+void writeResults()
+{
+  String message = "_" + String(humidity) + "_" + temperature + "_" + analog_airQualityPPM + "_" + ambientalLightReading + "_" + luminosityRatio + "_";
+  Serial.println(message);
 }
