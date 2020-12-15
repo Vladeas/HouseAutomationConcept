@@ -43,6 +43,9 @@ class MainAppGUI():
     def initializeFont(self):
         self.btnFont = font.Font(size = 15)
 
+    def close(self):
+        print("Shutting Down...")
+
 #Get the resolution of the current device screen
 #Return it in a format to be used witk tkinter
 def _get_screen_resolution(parent):
@@ -67,4 +70,5 @@ def start_GUI():
 
     root.mainloop()
 
+    app.close()
     serailRead_Home.close()
