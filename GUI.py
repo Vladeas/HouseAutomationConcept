@@ -16,13 +16,11 @@ class MainAppGUI():
         self.btnList = []
         self.imageList = []
         self.roomList = []
-        self.btnFont
 
         self.initializeDictionaries()
         self.initializeRoomList()
         self.initializeFont()
 
-        self.displayWindow = sc.dataWindowGUI(self.parent)
         self.menuBar = mb.MenuBarGUI(self.parent)
 
         self.menuBar.create_button(self.btnList[0], self.btnFont)

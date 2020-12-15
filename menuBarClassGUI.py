@@ -4,7 +4,7 @@ import ShowcaseGUI as sc #Use bk.FUNCTION to call a function from background
 
 #Menu Bar Frame Added to the Main Frame
 class MenuBarGUI():
-    def __init__(self, parent, displayWindow):
+    def __init__(self, parent):
         self.parent = tk.LabelFrame(parent)
         #self.parent.configure(bg = "white")
         self.configureFrame()
@@ -14,7 +14,7 @@ class MenuBarGUI():
         self.menuButtonList = [] # All created menus are part of this list
         self.menBtnCounter = 0 # count the elements in the menu list (Not sure if necessary yet)
 
-        self.displayWindow = displayWindow
+        self.displayWindow = sc.dataWindowGUI(parent)
 
     def configureFrame(self):
         self.parent["bg"] = "white"
@@ -64,11 +64,4 @@ class MenuBarGUI():
         self.menBtnCounter += 1
 
     def displayDataWindow(self, name):
-        if name == "Home":
-            self.homeWindow.displayImageHome("resources\House_Icon.png")
-        elif name == "Vlad's room":
-            self.homeWindow.displayImageHome("resources\Bed_Icon.png")
-        elif name == "Living room":
-            self.homeWindow.displayImageHome("resources\firePlace_Icon.png")
-        elif name == "Kitchen":
-            self.homeWindow.displayImageHome("resources\oven_Icon.jpg")
+        return 0
