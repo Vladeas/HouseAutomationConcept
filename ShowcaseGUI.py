@@ -1,13 +1,14 @@
 import tkinter as tk # Use tk.FUNCTION to call a function from tkinter
 import backbone as bk #Use bk.FUNCTION to call a function from background
-import tkinter.font as font
+import tkinter.font as font #Use font.Function to access a function from font library
+import time
 from PIL import Image, ImageTk
 
 class dataWindowGUI():
-    def __init__(self, parent):
+    def __init__(self, parent, backBoneObj):
         self.parent = tk.LabelFrame(parent) # The label is the new parent
         self.configureMainFrame()
-
+        self.serialRead_Home = backBoneObj
         #separate the data into labels
         self.realTimeDataWin = tk.LabelFrame(self.parent)
         self.toBeSeenWin = tk.LabelFrame(self.parent)
@@ -22,13 +23,19 @@ class dataWindowGUI():
         self.averageTemperatureTextLabel = tk.Label(self.realTimeDataWin, text = "Average Temperature : ")
         self.minTemperatureTextLabel = tk.Label(self.realTimeDataWin, text = "Min Temperature : ")
 
-        self.currentTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "22.5 C")
-        self.maxTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "26 C")
-        self.averageTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "22 C")
-        self.minTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "18 C")
+        self.currentTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "420 C")
+        self.maxTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "420 C")
+        self.averageTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "420 C")
+        self.minTemperatureDataLabel = tk.Label(self.realTimeDataWin, text = "420 C")
 
         self.configureRealTimeData()
 
+        #VALUES
+        self.currentTemperatureVal = None
+        self.currentHumidityVal = None
+        self.currentAirQualityVal = None
+        self.currentLuminosity = None
+        self.refreshValues()
         #items within the realTimeData frame
         
 
@@ -65,4 +72,11 @@ class dataWindowGUI():
         self.minTemperatureTextLabel.grid(row = 3, column = 0)
         self.minTemperatureDataLabel.grid(row = 3, column = 1)
 
-    
+    def refreshValues(self):
+        self.currentTemperatureVal = self.serialRead_Home.getCurrentTemperature()
+        self.currentTemperatureDataLabel["text"] = self.currentTemperatureVal + " C "
+        self.parent.after(2000, self.refreshValues)
+
+#Close the Thread
+    def close(self):
+        print("Shutting Down...")

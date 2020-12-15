@@ -1,50 +1,23 @@
 import tkinter as tk
-import backbone as bk
+import backbone as bk  #Use bk.FUNCTION to call a function from background
 import tkinter.font as font
 import menuBarClassGUI as mb
-import ShowcaseGUI as sc #Use bk.FUNCTION to call a function from background
+import ShowcaseGUI as sc
 
 #Main Frame, Window of the App
 class MainAppGUI():
-    def __init__(self, parent, resolution, appTitle):
+    def __init__(self, parent, backBoneObj, resolution, appTitle):
         self.parent = parent
-
+        self.serialRead_Home = backBoneObj
         self.parent.title(appTitle)
         self.parent.geometry(resolution)
         self.parent.configure(bg = "white")
 
-        self.btnList = []
-        self.imageList = []
-        self.roomList = []
-
-        self.initializeDictionaries()
-        self.initializeRoomList()
-        self.initializeFont()
-
         self.menuBar = mb.MenuBarGUI(self.parent)
-
-        self.menuBar.create_button(self.btnList[0], self.btnFont)
-        self.menuBar.create_menu_button("Rooms", self.btnFont, self.roomList)
-        self.menuBar.create_button(self.btnList[1], self.btnFont)
-
-    def initializeDictionaries(self):
-        self.btnList.append({"name": "Home", "commandPath": "displayImageHome", "alignment": "undefined"})
-        self.btnList.append({"name": "Settings", "commandPath": "displayImageHome", "alignment": "bottom"})
-
-    def initializeRoomList(self):
-        self.roomList = ["Vlad's room", "Living room", "Kitchen"]
-
-    def initializeImageList(self):
-        self.imageList.append("resources\House_Icon.png")
-        self.imageList.append("resources\Bed_Icon.png")
-        self.imageList.append("resources\firePlace_Icon.png")
-        self.imageList.append("resources\oven_Icon.jpg")
-
-    def initializeFont(self):
-        self.btnFont = font.Font(size = 15)
+        self.displayWindow = sc.dataWindowGUI(self.parent, self.serialRead_Home)
 
     def close(self):
-        print("Shutting Down...")
+        self.displayWindow.close()
 
 #Get the resolution of the current device screen
 #Return it in a format to be used witk tkinter
@@ -64,11 +37,12 @@ def start_GUI():
     resolution = _get_screen_resolution(root)
     appTitle = "Home Hub"
 
-    app = MainAppGUI(root, resolution, appTitle)
+    
+    serialRead_Home = bk.serialRead(9600, "COM5")
 
-    serailRead_Home = bk.serialRead(9600, "COM5")
+    app = MainAppGUI(root, serialRead_Home, resolution, appTitle)
 
     root.mainloop()
 
     app.close()
-    serailRead_Home.close()
+    serialRead_Home.close()

@@ -50,8 +50,19 @@ class serialRead:
         #print(self.rawDataSplit)
         self.refinedData.append({"humidity": self.rawDataSplit[1], "temperature": self.rawDataSplit[2], "air_quality": self.rawDataSplit[3], "lux": self.rawDataSplit[4], "lux_ratio": self.rawDataSplit[5]})
 
+#Close the Thread
     def close(self):
         self.isRun = False
         self.thread.join()
         self.serialConnection.close()
         print('Disconnected...')
+
+#GET METHODS
+    def getCurrentTemperature(self):
+        return self.rawDataSplit[2]
+
+    def getCurrentHumidity(self):
+        return self.rawDataSplit[1]
+
+    def getCurrentAirQuality(self):
+        return self.rawDataSplit[3]
