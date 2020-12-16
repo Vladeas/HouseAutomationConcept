@@ -66,3 +66,9 @@ class serialRead:
 
     def getCurrentAirQuality(self):
         return self.rawDataSplit[3]
+
+    def getCurrentLuminosity(self):
+        return self.rawDataSplit[4]
+
+    def getCurrentLuminosityRatio(self):
+        return self.rawDataSplit[5]
