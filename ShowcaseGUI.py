@@ -11,6 +11,7 @@ class dataWindowGUI():
         self.serialRead_Home = backBoneObj
         #separate the data into labels
         self.temperatureDataWin = tk.LabelFrame(self.parent)
+        self.humidityDataWin = tk.LabelFrame(self.parent)
         self.airQualityDataWin = tk.LabelFrame(self.parent)
         self.luminosityDataWin = tk.LabelFrame(self.parent)
         self.toBeSeenWin = tk.LabelFrame(self.parent)
@@ -31,6 +32,19 @@ class dataWindowGUI():
         self.minTemperatureDataLabel = tk.Label(self.temperatureDataWin, text = "420 C")
 
         self.configureTemperatureData()
+
+        #items within the humidity Data frame
+        self.currentHumidityTextLabel = tk.Label(self.humidityDataWin, text = "Current Humidity Level : ")
+        self.highHumidityTextLabel = tk.Label(self.humidityDataWin, text = "Highest Humidity Level : ")
+        self.averageHumidityTextLabel = tk.Label(self.humidityDataWin, text = "Average Humidity Level : ")
+        self.lowHumidityTextLabel = tk.Label(self.humidityDataWin, text = "Lowest Humidity Level : ")
+
+        self.currentHumidityDataLabel = tk.Label(self.humidityDataWin, text = "50 %")
+        self.highHumidityDataLabel = tk.Label(self.humidityDataWin, text = "50 %")
+        self.averageHumidityDataLabel = tk.Label(self.humidityDataWin, text = "50 %")
+        self.lowHumidityDataLabel = tk.Label(self.humidityDataWin, text = "50 %")
+
+        self.configureHumidityData()
 
         #items within the air quality data frame
         self.currentAirQualityTextLabel = tk.Label(self.airQualityDataWin, text = "Current Air Qlt : ")
@@ -69,21 +83,51 @@ class dataWindowGUI():
     def configureMainFrame(self):
         self.parent["bg"] = "blue"
         self.parent.pack(fill = tk.BOTH, side = tk.RIGHT, expand = True)
+        self.parent.columnconfigure(0, weight = 1)
+        self.parent.columnconfigure(1, weight = 1)
+        self.parent.columnconfigure(2, weight = 1)
+        self.parent.columnconfigure(3, weight = 1)
+        self.parent.rowconfigure(0, weight = 1)
+        self.parent.rowconfigure(1, weight = 2)
 
 #configure all the frames within the main Frame
     def configureSecondaryFrame(self):
         #temperature frame config
         self.temperatureDataWin.configure(bg = "white")
-        self.temperatureDataWin.grid(row = 0, column = 0)
+        self.temperatureDataWin.grid(row = 0, column = 0, sticky = "nsew")
+        #temperature frame config
+        self.humidityDataWin.configure(bg = "white")
+        self.humidityDataWin.grid(row = 0, column = 1, sticky = "nsew")
         #air quality frame config
         self.airQualityDataWin.config(bg = "white")
-        self.airQualityDataWin.grid(row = 0, column = 1)
+        self.airQualityDataWin.grid(row = 0, column = 2, sticky = "nsew")
         #light frame config
         self.luminosityDataWin.config(bg = "white")
-        self.luminosityDataWin.grid(row = 0, column = 2)
+        self.luminosityDataWin.grid(row = 0, column = 3, sticky = "nsew")
         #other frames
         self.toBeSeenWin.grid(row = 0, column = 1)
         self.graphDataWin.grid(row = 1, columnspan = 2)
+
+#configure all the elements within the real time Frame
+    def configureHumidityData(self):
+        #config items in temperature frame
+        self.currentHumidityTextLabel.config(font = self.textFont, bg = "white")
+        self.currentHumidityDataLabel.config(font = self.textFont, bg = "white")
+        self.highHumidityTextLabel.config(font = self.textFont, bg = "white")
+        self.highHumidityDataLabel.config(font = self.textFont, bg = "white")
+        self.averageHumidityTextLabel.config(font = self.textFont, bg = "white")
+        self.averageHumidityDataLabel.config(font = self.textFont, bg = "white")
+        self.lowHumidityTextLabel.config(font = self.textFont, bg = "white")
+        self.lowHumidityDataLabel.config(font = self.textFont, bg = "white")
+        #pack the items in the frame within a grid
+        self.currentHumidityTextLabel.grid(row = 0, column = 0)
+        self.currentHumidityDataLabel.grid(row = 0, column = 1)
+        self.highHumidityTextLabel.grid(row = 1, column = 0)
+        self.highHumidityDataLabel.grid(row = 1, column = 1)
+        self.averageHumidityTextLabel.grid(row = 2, column = 0)
+        self.averageHumidityDataLabel.grid(row = 2, column = 1)
+        self.lowHumidityTextLabel.grid(row = 3, column = 0)
+        self.lowHumidityDataLabel.grid(row = 3, column = 1)
 
 #configure all the elements within the real time Frame
     def configureTemperatureData(self):
@@ -143,6 +187,8 @@ class dataWindowGUI():
     def refreshValues(self):
         self.currentTemperatureVal = self.serialRead_Home.getCurrentTemperature()
         self.currentTemperatureDataLabel["text"] = self.currentTemperatureVal + " C "
+        self.currentHumidityVal = self.serialRead_Home.getCurrentHumidity()
+        self.currentHumidityDataLabel["text"] = self.currentHumidityVal + " % "
         self.currentAirQualityVal = self.serialRead_Home.getCurrentAirQuality()
         self.currentAirQualityDataLabel["text"] = self.currentAirQualityVal + " PPM "
         self.currentLuminosityVal = self.serialRead_Home.getCurrentLuminosity()

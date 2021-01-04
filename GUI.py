@@ -38,7 +38,7 @@ def start_GUI():
     appTitle = "Home Hub"
 
     
-    serialRead_Home = bk.serialRead(9600, "COM5")
+    serialRead_Home = bk.serialRead(9600, "COM4")
 
     app = MainAppGUI(root, serialRead_Home, resolution, appTitle)
 
