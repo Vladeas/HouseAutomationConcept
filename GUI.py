@@ -37,8 +37,8 @@ def start_GUI():
     resolution = _get_screen_resolution(root)
     appTitle = "Home Hub"
 
-    
-    serialRead_Home = bk.serialRead(9600, "COM4")
+    #serialRead_Home = bk.serialRead(9600, "COM4")
+    serialRead_Home = bk.serialRead(9600, "/dev/ttyACM0")
 
     app = MainAppGUI(root, serialRead_Home, resolution, appTitle)
 
