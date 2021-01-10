@@ -1,6 +1,7 @@
 from threading import Thread
 import serial
 import time
+import dataBaseClass as db
 
 class serialRead:
     def __init__(self, serialBaud = 9600, serialPort = "COM5"):
@@ -8,6 +9,7 @@ class serialRead:
         self.noDataAvailable = "No Data Available"
 
         #Neded variables
+        self.dbConnection = db.sqlLiteDataBase()
         self.serialBaud = serialBaud
         self.serialPort = serialPort
         self.thread = None
@@ -38,7 +40,7 @@ class serialRead:
 
 #Retrive the data from the arduino
     def backgroundThread(self):    # retrieve data
-        try:
+        #try:
             time.sleep(1.0)  # give some buffer time for retrieving data
             self.serialConnection.reset_input_buffer()
             while (self.isRun):
@@ -47,15 +49,20 @@ class serialRead:
                         self.isReceiving = True
                         self.processReceivedData()
                         #print(self.rawData)
-        except:
-            print("Interrupted Serial Connection")
-            self.rawDataSplit = 0
+        #except:
+            #print("Interrupted Serial Connection")
+            #self.rawDataSplit = 0
 
 #Transform the received string in usable data
     def processReceivedData(self):
         self.rawDataSplit = self.rawData.decode().split('_') # The "_" elemnt divides the transmited values
         #print(self.rawDataSplit)
         self.refinedData.append({"humidity": self.rawDataSplit[1], "temperature": self.rawDataSplit[2], "air_quality": self.rawDataSplit[3], "lux": self.rawDataSplit[4], "lux_ratio": self.rawDataSplit[5]})
+
+#send Data to teh dataBase
+    def sendDataToDB(self):
+        print("Impulse received !")
+        self.dbConnection.insertData(self.rawDataSplit[2], self.rawDataSplit[1], self.rawDataSplit[3], self.rawDataSplit[4], self.rawDataSplit[5])
 
 #Close the Thread
     def close(self):
@@ -68,6 +75,7 @@ class serialRead:
         print('Disconnected...')
 
 #GET METHODS
+#Current Values
     def getCurrentTemperature(self):
         if self.rawDataSplit == 0:
             return self.noDataAvailable
@@ -92,3 +100,59 @@ class serialRead:
         if self.rawDataSplit == 0:
             return self.noDataAvailable
         return self.rawDataSplit[5]
+
+#GET METHODS
+#Max Values
+    def getMaxTemperature(self):
+        return self.dbConnection.getMaxTemperature()
+    def getMaxHumidity(self):
+        return self.dbConnection.getMaxHumidity()
+    def getWorstAirQuality(self):
+        return self.dbConnection.getWorstAirQuality()
+    def getMaxLuminosity(self):
+        return self.dbConnection.getMaxLuminosity()
+    def getMaxLuminosityR(self):
+        return self.dbConnection.getMaxLuminosityR()
+
+#GET METHODS
+#Min Values
+    def getMinTemperature(self):
+        return self.dbConnection.getMinTemperature()
+    def getMinHumidity(self):
+        return self.dbConnection.getMinHumidity()
+    def getBestAirQuality(self):
+        return self.dbConnection.getBestAirQuality()
+    def getMinLuminosity(self):
+        return self.dbConnection.getMinLuminosity()
+    def getMinLuminosityR(self):
+        return self.dbConnection.getMinLuminosityR()
+
+#GET METHODS
+#All data
+    def getAllData(self):
+        return self.dbConnection.fetchAllData()
+
+    def getLastEntry(self):
+        return self.dbConnection.fetchLast()
+
+#Average values
+    def averageTemperature(self):
+        dataList = self.getAllData()
+        sum = 0
+        for data in dataList:
+            sum += data[0]
+        return round(sum/len(dataList),2)
+
+    def averageHumidity(self):
+        dataList = self.getAllData()
+        sum = 0
+        for data in dataList:
+            sum += data[1]
+        return round(sum/len(dataList),2)
+
+    def averageAirQlt(self):
+        dataList = self.getAllData()
+        sum = 0
+        for data in dataList:
+            sum += data[2]
+        return round(sum/len(dataList),2)

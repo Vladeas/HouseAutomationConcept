@@ -1,6 +1,7 @@
 import tkinter as tk # Use tk.FUNCTION to call a function from tkinter
 import backbone as bk #Use bk.FUNCTION to call a function from background
 import tkinter.font as font #Use font.Function to access a function from font library
+import tkinter.scrolledtext as st  #Use st.FUNCTION to call a function from scrolledText
 import time
 from PIL import Image, ImageTk
 
@@ -68,14 +69,31 @@ class dataWindowGUI():
 
         self.configureLuminosityData()
 
+        #items within the graph Frame
+        self.dataListScrollText = st.ScrolledText(self.graphDataWin)
+        self.dataList = None
+        self.configureGraphData()
+
         #VALUES
         self.currentTemperatureVal = None
         self.currentHumidityVal = None
         self.currentAirQualityVal = None
         self.currentLuminosityVal = None
         self.currentLuminosityRatioVal = None
+        self.maxTemperatureVal = None
+        self.maxHumidityVal = None
+        self.worstAirQualityVal = None
+        self.minTemperatureVal = None
+        self.minHumidityVal = None
+        self.bestAirQualityVal = None
+        self.averageAirQualityVal = None
+        self.averageHumidityVal = None
+        self.averageTemperatureVal = None
         self.refreshValues()
         #items within the realTimeData frame
+
+        #Send Impulse to save data
+        self.fiveMinImpulse()
         
 
 
@@ -88,7 +106,7 @@ class dataWindowGUI():
         self.parent.columnconfigure(2, weight = 1)
         self.parent.columnconfigure(3, weight = 1)
         self.parent.rowconfigure(0, weight = 1)
-        self.parent.rowconfigure(1, weight = 2)
+        self.parent.rowconfigure(1, weight = 1)
 
 #configure all the frames within the main Frame
     def configureSecondaryFrame(self):
@@ -106,7 +124,16 @@ class dataWindowGUI():
         self.luminosityDataWin.grid(row = 0, column = 3, sticky = "nsew")
         #other frames
         self.toBeSeenWin.grid(row = 0, column = 1)
-        self.graphDataWin.grid(row = 1, columnspan = 2)
+        self.graphDataWin.config(bg = "white")
+        self.graphDataWin.grid(row = 1, columnspan = 4, sticky = "nsew")
+
+#configureDataList
+    def configureGraphData(self):
+        self.dataListScrollText.config(font = self.textFont, bg = "white")
+        self.dataListScrollText.pack(fill = tk.BOTH)
+        self.dataList = self.serialRead_Home.getAllData()
+        for data in self.dataList:
+            self.dataListScrollText.insert(tk.INSERT,"Temp : " + str(data[0]) + "    Hum : " + str(data[1]) + "    AirQlt : " + str(data[2]) + "    Lux : " + str(data[3]) + "    LuxRatio : " + str(data[4]) + "\n")
 
 #configure all the elements within the real time Frame
     def configureHumidityData(self):
@@ -184,7 +211,15 @@ class dataWindowGUI():
         self.currentLuminosityRatioTextLabel.grid(row = 1, column = 0)
         self.currentLuminosityRatioDataLabel.grid(row = 1, column = 1)
 
+#Function calls itself after a time interval
     def refreshValues(self):
+        self.currentValuesRefresh()
+        self.maxValuesRefresh()
+        self.minValuesRefresh()
+        self.averageValuesRefresh()
+        self.parent.after(2000, self.refreshValues)
+
+    def currentValuesRefresh(self):
         self.currentTemperatureVal = self.serialRead_Home.getCurrentTemperature()
         self.currentTemperatureDataLabel["text"] = self.currentTemperatureVal + " C "
         self.currentHumidityVal = self.serialRead_Home.getCurrentHumidity()
@@ -195,7 +230,41 @@ class dataWindowGUI():
         self.currentLuminosityDataLabel["text"] = self.currentLuminosityVal + " LUX "
         self.currentLuminosityRatioVal = self.serialRead_Home.getCurrentLuminosityRatio()
         self.currentLuminosityRatioDataLabel["text"] = self.currentLuminosityRatioVal + " % "
-        self.parent.after(2000, self.refreshValues)
+
+    def maxValuesRefresh(self):
+        self.maxTemperatureVal = self.serialRead_Home.getMaxTemperature()
+        self.maxHumidityVal = self.serialRead_Home.getMaxHumidity()
+        self.worstAirQualityVal = self.serialRead_Home.getWorstAirQuality()
+        self.maxTemperatureDataLabel["text"] = self.maxTemperatureVal #+ " C "
+        self.highHumidityDataLabel["text"] = self.maxHumidityVal #+ " % "
+        self.worstAirQualityDataLabel["text"] = self.worstAirQualityVal #+ " PPM "
+
+    def minValuesRefresh(self):
+        self.minTemperatureVal = self.serialRead_Home.getMinTemperature()
+        self.minHumidityVal = self.serialRead_Home.getMinHumidity()
+        self.bestAirQualityVal = self.serialRead_Home.getBestAirQuality()
+        self.minTemperatureDataLabel["text"] = self.minTemperatureVal #+ " C "
+        self.lowHumidityDataLabel["text"] = self.minHumidityVal #+ " % "
+        self.bestAirQualityDataLabel["text"] = self.bestAirQualityVal #+ " PPM "
+
+    def averageValuesRefresh(self):
+        self.averageTemperatureVal = self.serialRead_Home.averageTemperature()
+        self.averageHumidityVal = self.serialRead_Home.averageHumidity()
+        self.averageAirQualityVal = self.serialRead_Home.averageAirQlt()
+        self.averageTemperatureDataLabel["text"] = self.averageTemperatureVal
+        self.averageHumidityDataLabel["text"] = self.averageHumidityVal
+        self.averageAirQualityDataLabel["text"] = self.averageAirQualityVal
+
+
+    def fiveMinImpulse(self):
+        print("Impulse sent !")
+        self.serialRead_Home.sendDataToDB()
+        self.updateScrollText()
+        self.parent.after(150000, self.fiveMinImpulse)
+
+    def updateScrollText(self):
+        data = self.serialRead_Home.getLastEntry()
+        self.dataListScrollText.insert(tk.INSERT,"Temp : " + str(data[0]) + "    Hum : " + str(data[1]) + "    AirQlt : " + str(data[2]) + "    Lux : " + str(data[3]) + "    LuxRatio : " + str(data[4]) + "\n")
 
 #Close the Thread
     def close(self):
